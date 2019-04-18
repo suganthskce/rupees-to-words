@@ -32,27 +32,63 @@ helperHash["100000"] = "Lakh";
 helperHash["10000000"] = "Crore";
 
 module.exports = function (amount) {
+
+    // Splitting Whole value and decimal value
+    var amountArray = amount.toString().split('.');
+    var wholeAmount = '';
+    var decimalAmount = '';
+    var limitedExceeded = false;
+
+    // Handling Whole number places
     // Removing leading zeros
-    amount = Number(amount).toString();
-    var amountLength = amount.toString().length;
+    var _amount = Number(amountArray[0]).toString();
+    var amountLength = _amount.toString().length;
 
     if (amountLength <= 3) {
-        return getHundredthPlace(amount);
+        wholeAmount = getHundredthPlace(_amount);
     }
     else if (amountLength > 3 && amountLength <= 5) {
-        return getThousandthPlace(amount);
+        wholeAmount = getThousandthPlace(_amount);
     }
     else if (amountLength > 5 && amountLength <= 7) {
-        return getLakhsPlace(amount);
+        wholeAmount = getLakhsPlace(_amount);
     }
     else if (amountLength > 7 && amountLength <= 9) {
-        return getCrorePlace(amount);
+        wholeAmount = getCrorePlace(_amount);
+    } else {
+        limitedExceeded = true;
+    }
+
+    // Handling decimal places
+    // Removing leading zeros
+    _amount = amountArray[1] ? Number(amountArray[1]).toString() : "0";
+    amountLength = _amount.toString().length;
+
+    if (amountLength <= 3) {
+        decimalAmount = getHundredthPlace(_amount);
+    }
+    else if (amountLength > 3 && amountLength <= 5) {
+        decimalAmount = getThousandthPlace(_amount);
+    }
+    else if (amountLength > 5 && amountLength <= 7) {
+        decimalAmount = getLakhsPlace(_amount);
+    }
+    else if (amountLength > 7 && amountLength <= 9) {
+        decimalAmount = getCrorePlace(_amount);
+    } else {
+        limitedExceeded = true;
+    }
+
+    if (limitedExceeded) {
+        return '';
+    } else {
+        return `${wholeAmount.length ? `${wholeAmount} Rupee${wholeAmount === "One" ? '' : 's'}` : ``} ${wholeAmount.length && decimalAmount.length ? ' and ' : ''} ${decimalAmount.length ? `${decimalAmount} Paisa` : ``}`;
     }
 }
 
 var getHundredthPlace = function (lastThreeDigits) {
     var result = "";
-    if (lastThreeDigits == "000") {
+    if (lastThreeDigits == "000" || lastThreeDigits == "00" || lastThreeDigits == "0") {
         result = "";
     }
     else if (!!helperHash[lastThreeDigits]) {
