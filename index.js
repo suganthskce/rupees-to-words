@@ -32,7 +32,6 @@ helperHash["100000"] = "Lakh";
 helperHash["10000000"] = "Crore";
 
 module.exports = function (amount) {
-
     // Splitting Whole value and decimal value
     var amountArray = amount.toString().split('.');
     var wholeAmount = '';
@@ -82,8 +81,28 @@ module.exports = function (amount) {
     if (limitedExceeded) {
         return '';
     } else {
-        return `${wholeAmount.length ? `${wholeAmount} Rupee${wholeAmount === "One" ? '' : 's'}` : ``} ${wholeAmount.length && decimalAmount.length ? ' and ' : ''} ${decimalAmount.length ? `${decimalAmount} Paisa` : ``}`;
+        var result = getAmountString(wholeAmount,"Rupee");
+        var decimalString = getAmountString(decimalAmount,"Paisa");
+        if(result.length && decimalString.length) {
+            result += ' and ' + decimalString;
+        } else if (decimalString.length) {
+            result = decimalString;
+        }
+        return result;
+        //Changing to ES5
+        //return `${wholeAmount.length ? `${wholeAmount} Rupee${wholeAmount === "One" ? '' : 's'}` : ``} ${wholeAmount.length && decimalAmount.length ? ' and ' : ''} ${decimalAmount.length ? `${decimalAmount} Paisa` : ``}`;
     }
+}
+
+var getAmountString = function (amount , denomination) {
+    var result = '';
+    if(amount.length) {
+        result = amount + ' ' + denomination;
+        if(amount !== 'One' && denomination !== "Paisa") {
+            result += 's';
+        }
+    }
+    return result;
 }
 
 var getHundredthPlace = function (lastThreeDigits) {
