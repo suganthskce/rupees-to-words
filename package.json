@@ -1,6 +1,6 @@
 {
   "name": "rupees-to-words",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Npm package to convert rupees to string",
   "main": "index.js",
   "scripts": {

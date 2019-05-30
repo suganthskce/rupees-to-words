@@ -41,7 +41,7 @@ module.exports = function (amount) {
     // Handling Whole number places
     // Removing leading zeros
     var _amount = Number(amountArray[0]).toString();
-    var amountLength = _amount.toString().length;
+    var amountLength = _amount.length;
 
     if (amountLength <= 3) {
         wholeAmount = getHundredthPlace(_amount);
@@ -60,21 +60,18 @@ module.exports = function (amount) {
 
     // Handling decimal places
     // Removing leading zeros
-    _amount = amountArray[1] ? Number(amountArray[1]).toString() : "0";
-    amountLength = _amount.toString().length;
+    _amount = amountArray[1] ? amountArray[1] : "00";
+    amountLength = _amount.length;
 
-    if (amountLength <= 3) {
+    if(amountLength == 1) {
+        _amount = _amount + "0";
+        amountLength += 1;
+    }
+
+
+    if (amountLength == 2) {
         decimalAmount = getHundredthPlace(_amount);
-    }
-    else if (amountLength > 3 && amountLength <= 5) {
-        decimalAmount = getThousandthPlace(_amount);
-    }
-    else if (amountLength > 5 && amountLength <= 7) {
-        decimalAmount = getLakhsPlace(_amount);
-    }
-    else if (amountLength > 7 && amountLength <= 9) {
-        decimalAmount = getCrorePlace(_amount);
-    } else {
+    } else  {
         limitedExceeded = true;
     }
 
